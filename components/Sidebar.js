@@ -1,7 +1,7 @@
-import { Avatar, IconButton } from '@material-ui/core'
+import { Avatar, IconButton }from '@mui/material'
 import styled from "styled-components"
-import ChatIcon from '@material-ui/icons/Chat'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
+import ChatIcon from '@mui/icons-material/Chat'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 const Sidebar = () => {
   /*
@@ -86,6 +86,5 @@ const UserAvatar = styled(Avatar)`
   icons relating to chats and options in the sidebar
   component.
 */
-const IconsContainer = styled.div`
-`
+const IconsContainer = styled.div``
 
