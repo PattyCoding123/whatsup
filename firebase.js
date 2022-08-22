@@ -5,13 +5,13 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAdqMko7BVDvTokPg-WWkNtWQbq0GPENHk",
-  authDomain: "whatsup-e290f.firebaseapp.com",
-  projectId: "whatsup-e290f",
-  storageBucket: "whatsup-e290f.appspot.com",
-  messagingSenderId: "129535299409",
-  appId: "1:129535299409:web:14c0a40279e84166f00d70",
-  measurementId: "G-HCHCDK4576"
+  apiKey: NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: NEXT_PUBLIC_FIREBASE_SENDER_ID,
+  appId: NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 
