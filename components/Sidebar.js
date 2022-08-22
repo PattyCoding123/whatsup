@@ -1,9 +1,28 @@
-import { Avatar, IconButton }from '@mui/material'
+import { Avatar, Button, IconButton }from '@mui/material'
 import styled from "styled-components"
 import ChatIcon from '@mui/icons-material/Chat'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import SearchIcon from '@mui/icons-material/Search'
+import * as EmailValidator from 'email-validator'
 
 const Sidebar = () => {
+  const createChat = () => {
+    const input = prompt('Please enter an email address for the user you want to chat with.')
+
+    if (!input) return null;
+   
+    if (EmailValidator.validate(input)) {
+      // We need to add the chat into the DB 'chats' collection
+      const chats = 
+      {
+        id: 'chats',
+        name: 'Chats',
+        email: 'chats@gmail.com',
+        avatar: 'https://avatars.githubusercontent'
+      }
+    }
+  }
+
   /*
     The Sidebar is a component that displays a user interface
     with a list of users and a search bar to find other users.
@@ -29,6 +48,15 @@ const Sidebar = () => {
           </IconButton>
         </IconsContainer>
       </Header>
+
+      <Search>
+          <SearchIcon />
+          <SearchInput placeholder="Search for users"/>
+      </Search>
+
+      <SidebarButton onClick={createChat}>Start a new chat</SidebarButton>
+
+      {/* List of user chats */}
     </Container>
   )
 }
@@ -88,3 +116,40 @@ const UserAvatar = styled(Avatar)`
 */
 const IconsContainer = styled.div``
 
+/*
+  The Search is a div which will display a search 
+  icon and a search input field.
+
+  We want to align the items in the center of the div
+  and we will have the children be flex items.
+*/
+const Search = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 5px;
+`
+
+/*
+  The SearchInput is a styled input that will have no borders
+  and be a flex display of 1.
+*/
+const SearchInput = styled.input`
+  border: none;
+  flex: 1;
+`
+
+/*
+  The SidebarButton is a button that will allow users
+  to start a new chat. The width will be 100% of
+  the Sidebar contianer, and  we will use the &&& to increase the 
+  priority of the top and bottom borders.
+*/
+const SidebarButton = styled(Button)`
+  width: 100%;
+
+  &&& {
+    border-top: 1px solid whitesmoke;
+    border-bottom: 1px solid whitesmoke;
+  }
+`
