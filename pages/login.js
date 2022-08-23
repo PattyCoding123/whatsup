@@ -22,8 +22,8 @@ const Login = () => {
 
   /*
     The Login component will display the app Logo and
-    the login button. The login button redirect the
-    users to sign in with their Google account.
+    the login button. The login button redirects the
+    users to sign in with their Google account via a Popup.
   */
   return (
     <Container>
