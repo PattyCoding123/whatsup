@@ -20,5 +20,4 @@ function MyApp({ Component, pageProps }) {
   return <Component {...pageProps} />
 }
 
-// test commit
 export default MyApp
