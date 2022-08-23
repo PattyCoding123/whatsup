@@ -1,10 +1,9 @@
+import { useAuthState } from 'react-firebase-hooks/auth'
+
 import Login from './login';
 import Loading from '../components/Loading'
 import '../styles/globals.css'
 import { auth, db } from '../firebase'
-
-import { useAuthState } from 'react-firebase-hooks/auth'
-
 
 function MyApp({ Component, pageProps }) {
   // Get an instance of the user and loading state

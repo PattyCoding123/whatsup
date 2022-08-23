@@ -1,9 +1,9 @@
-import { auth, provider } from '../firebase'
-
 import Head from 'next/head'
 import styled from 'styled-components'
 import { Button } from '@mui/material'
 import { signInWithPopup } from 'firebase/auth'
+
+import { auth, provider } from '../firebase'
 
 const Login = () => {
 
