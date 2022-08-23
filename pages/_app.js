@@ -1,5 +1,5 @@
 import Login from './login';
-import { Loading } from '../components/Loading'
+import Loading from '../components/Loading'
 import '../styles/globals.css'
 import { auth, db } from '../firebase'
 
