@@ -4,13 +4,21 @@ import ChatIcon from '@mui/icons-material/Chat'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SearchIcon from '@mui/icons-material/Search'
 import * as EmailValidator from 'email-validator'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, query, where } from 'firebase/firestore'
 import { useAuthState } from 'react-firebase-hooks/auth'
+import { useCollection } from 'react-firebase-hooks/firestore'
 
 import { auth, db } from '../firebase'
 
 const Sidebar = () => {
+  /*
+    The following lines of code will generate a snapshot of all the current chats
+    for the logged in user using a Firestore query and the useCollection 
+    react-firebase-hooks.
+  */
   const [user] = useAuthState(auth)
+  const userChatRef = query(collection(db, "chats"), where("users", "array-contains", user.email))
+  const [chatsSnapshot] = useCollection(userChatRef)
 
   /*
     The following event handler will create a new chat
@@ -29,13 +37,29 @@ const Sidebar = () => {
 
     if (!input) return null;
    
-    if (EmailValidator.validate(input)) {
-      // We need to add the 1-on-1 chat into the DB 'chats' collection
+    if (EmailValidator.validate(input) && !chatAlreadyExists(input) && input !== user.email) {
+      // We need to add the 1-on-1 chat into the DB 'chats' collection only if the
+      // email is valid and the chat does not already exist.
       const collectionRef = collection(db, "chats")
       const data = { users: [user.email, input] }
       await addDoc(collectionRef, data)
     }
   }
+
+  /*
+    Using the chatsSnapshot (querySnapshot<DocumentData>) from our react-firebase-hooks,
+    we will go through each 1-on-1 chat, and in each chat, will initiate another search
+    to find a user that matches the recipientEmail. 
+
+    The user === recipientEmail 'find' will return an array of length 1 that contains 
+    the recipientEmail IF it exists, and then the 1-on-1 'find' chat will return 
+    the first instance of the document which returned the array of length 1 (since we 
+    needed to find a chat that returned an array of length > 0).
+  */
+  const chatAlreadyExists = (recipientEmail) => 
+    !!chatsSnapshot?.docs
+    .find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0)
+  
 
   /*
     The Sidebar is a component that displays a user interface
@@ -70,7 +94,10 @@ const Sidebar = () => {
 
       <SidebarButton onClick={createChat}>Start a new chat</SidebarButton>
 
-      {/* List of user chats */}
+      {/* List of user chats
+      {chatsSnapshot?.docs.map((chat) => {
+        
+      })} */}
     </Container>
   )
 }
