@@ -9,6 +9,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { useCollection } from 'react-firebase-hooks/firestore'
 
 import { auth, db } from '../firebase'
+import Chat from '../components/Chat'
 
 const Sidebar = () => {
   /*
@@ -47,6 +48,8 @@ const Sidebar = () => {
   }
 
   /*
+    The following function will check to see if a 1-on-1 chat already exists.
+
     Using the chatsSnapshot (querySnapshot<DocumentData>) from our react-firebase-hooks,
     we will go through each 1-on-1 chat, and in each chat, will initiate another search
     to find a user that matches the recipientEmail. 
@@ -70,7 +73,7 @@ const Sidebar = () => {
   return (
     <Container>
       <Header>
-        <UserAvatar onClick={() => auth.signOut()}/>
+        <UserAvatar src={user.photoURL} onClick={() => auth.signOut()}/>
 
         <IconsContainer>
           {/* 
@@ -94,10 +97,18 @@ const Sidebar = () => {
 
       <SidebarButton onClick={createChat}>Start a new chat</SidebarButton>
 
-      {/* List of user chats
-      {chatsSnapshot?.docs.map((chat) => {
-        
-      })} */}
+      {/* 
+        List of user chats:
+        For each user chat, we will render a small "Chat" component that
+        displays the recipient email address and their profile picture.
+
+        To do this, we will map through the document snapshot array we had to
+        query from the database. Each entry in the snapshot is a "chat" between
+        the currently loggeded in user and the recipient email address.
+      */}
+      {chatsSnapshot?.docs.map((chat) => (
+        <Chat key={chat.id} id={chat.id} recipientEmail={chat.data().users[1]}/>
+      ))}
     </Container>
   )
 }
