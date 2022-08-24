@@ -15,17 +15,25 @@ function MyApp({ Component, pageProps }) {
   // using the react-firebase-hook
   const [user, loading] = useAuthState(auth)
 
+  /*
+    In the useEffect, we will have an async function
+    that will store the user's email, lastSeen timestamp,
+    and their photoURL into our database in Firestore.
+
+    This will activate whenever the user logs in, and 
+    we will merge the documents to update the lastSeen timestamp.
+  */
   useEffect(() => {
     async function setUser() {
       if (user) {
-        const document = doc(db, "users", user.uid)
+        const docRef = doc(db, "users", user.uid)
         const data = {
           email: user.email,
           lastSeen: serverTimestamp(),
           photoURL: user.photoURL,
         }
         const options = { merge: true }
-        await setDoc(document, data, options)
+        await setDoc(docRef, data, options)
       }
     }
 
