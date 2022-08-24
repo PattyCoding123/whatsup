@@ -4,24 +4,36 @@ import ChatIcon from '@mui/icons-material/Chat'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SearchIcon from '@mui/icons-material/Search'
 import * as EmailValidator from 'email-validator'
+import { collection, addDoc } from 'firebase/firestore'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
 
 const Sidebar = () => {
-  const createChat = () => {
+  const [user] = useAuthState(auth)
+
+  /*
+    The following event handler will create a new chat
+    document in our firestore database.
+
+    First, we will prompt the user to enter an email address they
+    wish to chat with. Then, if the address is valid, we will
+    add a document to the database. The document is an array
+    with the logged in user and the recipient.
+
+    Since we are using the addDoc function, we need to create
+    a collection reference.
+  */
+  const createChat = async () => {
     const input = prompt('Please enter an email address for the user you want to chat with.')
 
     if (!input) return null;
    
     if (EmailValidator.validate(input)) {
-      // We need to add the chat into the DB 'chats' collection
-      const chats = 
-      {
-        id: 'chats',
-        name: 'Chats',
-        email: 'chats@gmail.com',
-        avatar: 'https://avatars.githubusercontent'
-      }
+      // We need to add the 1-on-1 chat into the DB 'chats' collection
+      const collectionRef = collection(db, "chats")
+      const data = { users: [user.email, input] }
+      await addDoc(collectionRef, data)
     }
   }
 
