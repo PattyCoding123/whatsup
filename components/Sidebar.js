@@ -1,7 +1,6 @@
 import { Avatar, Button, IconButton }from '@mui/material'
 import styled from "styled-components"
-import ChatIcon from '@mui/icons-material/Chat'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
+import { Chat, MoreVert } from '@mui/icons-material'
 import SearchIcon from '@mui/icons-material/Search'
 import * as EmailValidator from 'email-validator'
 import { collection, addDoc, query, where } from 'firebase/firestore'
@@ -9,13 +8,16 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { useCollection } from 'react-firebase-hooks/firestore'
 
 import { auth, db } from '../firebase'
-import Chat from '../components/Chat'
+import ChatBar from './ChatBar'
 
 const Sidebar = () => {
   /*
     The following lines of code will generate a snapshot of all the current chats
     for the logged in user using a Firestore query and the useCollection 
     react-firebase-hooks.
+
+    The chatsSnapshot acts as an up-to-date collection of all the chat messages
+    that are associated with the logged in user.
   */
   const [user] = useAuthState(auth)
   const userChatRef = query(collection(db, "chats"), where("users", "array-contains", user.email))
@@ -82,10 +84,10 @@ const Sidebar = () => {
             container to make them actual buttons.
           */}
           <IconButton>
-            <ChatIcon />
+            <Chat />
           </IconButton>
           <IconButton>
-            <MoreVertIcon />
+            <MoreVert />
           </IconButton>
         </IconsContainer>
       </Header>
@@ -99,7 +101,7 @@ const Sidebar = () => {
 
       {/* 
         List of user chats:
-        For each user chat, we will render a small "Chat" component that
+        For each user chat, we will render a small "ChatBar" component that
         displays the recipient email address and their profile picture.
 
         To do this, we will map through the document snapshot array we had to
@@ -107,7 +109,7 @@ const Sidebar = () => {
         the currently loggeded in user and the recipient email address.
       */}
       {chatsSnapshot?.docs.map((chat) => (
-        <Chat key={chat.id} id={chat.id} recipientEmail={chat.data().users[1]}/>
+        <ChatBar key={chat.id} id={chat.id} recipientEmail={chat.data().users[1]}/>
       ))}
     </Container>
   )
