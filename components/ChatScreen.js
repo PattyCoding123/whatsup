@@ -13,9 +13,13 @@ import Message from './Message'
 
 const ChatScreen = ({ chat, messages }) => {
   const [user] = useAuthState(auth)
-  const [input, setInput] = useState({message: ""})
+  const [input, setInput] = useState({message: ""}) // Control form data using state
   const router = useRouter()
 
+  /* 
+    On the event where the user enters some text 
+    into the input field, we will make sure to update the input.
+  */
   const onChange = (event) => {
     const { name, value } = event.target
 
@@ -25,6 +29,18 @@ const ChatScreen = ({ chat, messages }) => {
     }))
   }
 
+  /*
+    Send message will activate when the user hits enter for their message.
+
+    The first step of the function is to update the logged in user's timestamp
+    to display that they have been active recently.
+    
+    The second step is to update the chat history of the 1-on-1 chat.
+    To do so, we will access the "messages" subcollection of the chat
+    and add a new document with the message datas.
+
+    Finally, we will reset the input form state.
+  */
   const sendMessage = async (event) => {
     event.preventDefault()
 
@@ -70,7 +86,8 @@ const ChatScreen = ({ chat, messages }) => {
   const showMessages = () => {
     if(messagesSnapshot) {
       return messagesSnapshot.docs.map((message) => (
-        // Show the messages
+        // Show the messages from the messagesSnapshot by passing 
+        // data from the docs into a Message component.
         <Message 
           key={message.id}
           user={message.data().user}
@@ -81,7 +98,8 @@ const ChatScreen = ({ chat, messages }) => {
         />
       ))
     } else {
-      // Return the server-side messages.
+      // If the messagesSnapshot is still undefined, we will use the server-side
+      // rendered messages to avoid having to wait for messages to appear.
       return JSON.parse(messages).map((message) => (
         <Message key={message.id} user={message.user} message={message} />
       ))
@@ -133,6 +151,11 @@ const ChatScreen = ({ chat, messages }) => {
           name="message"
           onChange={onChange}
         />
+        {/* 
+          The button will submit the message via the sendMessage method.
+          It will be hidden by default, and it will be disabled if 
+          the input field is empty.
+        */}
         <button 
           hidden 
           disabled={!input.message} 
@@ -148,11 +171,11 @@ const ChatScreen = ({ chat, messages }) => {
 }
 export default ChatScreen
 
-const Container = styled.div`
-`
+const Container = styled.div``
 /*
   For the Header of the ChatScreen, we will make the position
-  sticky to make the elements stay at the top of the Container div.
+  sticky and top as 0 to make the elements stay at the top 
+  of the Container div.
 
   We also want the items to be displayed as flex items, and we will align
   them in the center. They should remain in the row direction.
@@ -195,6 +218,14 @@ const HeaderInformation = styled.div`
 
 const HeaderIcons = styled.div``
 
+/*
+  The messages container is where all the Message components 
+  will be rendered. We want some padding to ensure that
+  the messages do not appear to close to the Header or 
+  InputContainer.
+
+  Also, we will make the minimum height 90% of the viewport height.
+*/
 const MessageContainer = styled.div`
   padding: 30px;
   background-color: #e5ded8;
@@ -203,6 +234,17 @@ const MessageContainer = styled.div`
 
 const EndOfMessage = styled.div``
 
+/*
+  The InputContainer is where the input field will be rendered along
+  with some icons. We want the items inside the form to be flex items,
+  and we will align them in the center.
+
+  There will be some padding so that the input field and the icons
+  are not directly next to the edges of the form.
+
+  Also, we want the input container to stick to the bottom of the Container
+  div, so we will set the position to sticky and have bottom as 0.
+*/
 const InputContainer = styled.form`
   display: flex;
   align-items: center;
@@ -213,6 +255,19 @@ const InputContainer = styled.form`
   z-index: 100;
 `
 
+/*
+  For the Input field itself, we will make the flex value equal to 1
+  and we will set its align-items to be centered.
+
+  Additionally, we will have some padding so that the user's message
+  is not next to edges of the field.
+
+  We want the position to be sticky and bottom as 0 to remain at the
+  bottom of the InputContainer.
+
+  We want a noticable background color but no border while the
+  user is typing.
+*/
 const Input = styled.input`
   flex: 1;
   align-items: center;

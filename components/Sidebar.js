@@ -120,6 +120,18 @@ const Sidebar = () => {
 
 export default Sidebar
 
+/*
+  The container for the Sidebar will have a flex of 0.45 in relation to 
+  the ChatScreen.
+
+  Additionally, we want a border to the right so that it appears separate 
+  from the chat screen.
+
+  The Sidebar should take up 100% of the viewport height, and the 
+  width should range between 300px and 350px. If there is overflow
+  on the y-axis, we will have a scrollbar so that the user can
+  scroll through more of their chats.
+*/
 const Container = styled.div`
   flex: 0.45;
   border-right: 1px solid whitesmoke;
