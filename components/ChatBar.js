@@ -1,21 +1,31 @@
 import styled from 'styled-components'
 import { Avatar } from '@mui/material'
-import { db } from '../firebase'
+import { auth, db } from '../firebase'
 import { useCollection } from 'react-firebase-hooks/firestore'
+import { useAuthState } from 'react-firebase-hooks/auth'
 import { collection, query, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 
-const ChatBar = ({ id, recipientEmail }) => {
+import getRecipientEmail from '../lib/getRecipientEmail'
+
+const ChatBar = ({ id, users }) => {
+  const [user] = useAuthState(auth)
+
+  // Get the recipient email using our utility function.
+  const recipientEmail = getRecipientEmail(users, user)
+
   // The following lines of code will return an array that contains all the 
   // documents in our users collection which match the recipientEmail.
   const recipientColRef = query(collection(db, "users"), where("email", "==", recipientEmail))
   const [recipientSnapshot] = useCollection(recipientColRef)
   const recipient = recipientSnapshot?.docs?.[0]?.data() // Get the document from the QuerySnapshot
 
-  const router = useRouter()
+  const router = useRouter() // Obtain page router
+  
+  // The enterChat function will push the user to an [id] page
+  // which has a slug equal to the chat document id.
   const enterChat = () => {
     router.push(`/chat/${id}`)
-
   }
 
   /*
@@ -24,6 +34,9 @@ const ChatBar = ({ id, recipientEmail }) => {
 
     If the recipient does NOT have a profile picture, the first
     letter of their email address will be displayed instead.
+
+    Additionally, clicking on a ChatBar will send the user
+    to the chat page with corresponding id prop.
   */
   return (
     <Container onClick={enterChat}>
