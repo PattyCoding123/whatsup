@@ -6,10 +6,14 @@ import Sidebar from '../../components/Sidebar'
 import ChatScreen from '../../components/ChatScreen'
 import { db } from '../../firebase'
 
-const Chat = ({ chat, messages}) => {
+const Chat = ({ chat, messages }) => {
   /*
     The [id] page will be rendered when the user clicks a ChatBar
-    to initiate a 1-on-1 chat. It will render the Sidebar in a addition
+    to initiate a 1-on-1 chat. The unique router value is the 
+    same as the document id for the specific chat between
+    the user and the chat.
+    
+    It will render the Sidebar in a addition
     to a chat container that will display both the messages and other
     information regarding the recipient.
 
