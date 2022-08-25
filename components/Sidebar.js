@@ -45,7 +45,7 @@ const Sidebar = () => {
       // email is valid and the chat does not already exist.
       const collectionRef = collection(db, "chats")
       const data = { users: [user.email, input] }
-      await addDoc(collectionRef, data)
+      await addDoc(collectionRef, data) // Creates a unique document id for the chat.
     }
   }
 
@@ -105,11 +105,13 @@ const Sidebar = () => {
         displays the recipient email address and their profile picture.
 
         To do this, we will map through the document snapshot array we had to
-        query from the database. Each entry in the snapshot is a "chat" between
+        query from the database. Each document in the snapshot is a "chat" between
         the currently loggeded in user and the recipient email address.
+
+        Each chatbar component will have an id equal to the chat document id.
       */}
       {chatsSnapshot?.docs.map((chat) => (
-        <ChatBar key={chat.id} id={chat.id} recipientEmail={chat.data().users[1]}/>
+        <ChatBar key={chat.id} id={chat.id} users={chat.data().users}/>
       ))}
     </Container>
   )
@@ -119,6 +121,17 @@ const Sidebar = () => {
 export default Sidebar
 
 const Container = styled.div`
+  flex: 0.45;
+  border-right: 1px solid whitesmoke;
+  height: 100vh;
+  min-width: 300px;
+  max-width: 350px;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none; /* Edge */
+  scrollbar-width: none; /* Firefox */
 `
 
 /*
@@ -191,6 +204,7 @@ const Search = styled.div`
 const SearchInput = styled.input`
   border: none;
   flex: 1;
+
 `
 
 /*
