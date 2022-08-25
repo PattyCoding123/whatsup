@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import { Avatar } from '@mui/material'
-import { auth, db } from '../firebase'
+import { db } from '../firebase'
 import { useCollection } from 'react-firebase-hooks/firestore'
 import { collection, query, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 
-const Chat = ({ id, recipientEmail }) => {
+const ChatBar = ({ id, recipientEmail }) => {
   // The following lines of code will return an array that contains all the 
   // documents in our users collection which match the recipientEmail.
   const recipientColRef = query(collection(db, "users"), where("email", "==", recipientEmail))
@@ -19,7 +19,7 @@ const Chat = ({ id, recipientEmail }) => {
   }
 
   /*
-    The Chat component will be a div that displays the profile
+    The ChatBar component will be a div that displays the profile
     image of the recipient as well as the email address.
 
     If the recipient does NOT have a profile picture, the first
@@ -36,10 +36,10 @@ const Chat = ({ id, recipientEmail }) => {
     </Container>
   )
 }
-export default Chat
+export default ChatBar
 
 /*
-  For the Chat Container, we will have the image and email
+  For the ChatBar Container, we will have the image and email
   address be flex itemns. They will be aligned in the center
   of the row.
 
