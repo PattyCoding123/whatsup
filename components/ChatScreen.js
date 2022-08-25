@@ -87,7 +87,16 @@ export default ChatScreen
 
 const Container = styled.div`
 `
+/*
+  For the Header of the ChatScreen, we will make the position
+  sticky to make the elements stay at the top of the Container div.
 
+  We also want the items to be displayed as flex items, and we will align
+  them in the center. They should remain in the row direction.
+
+  The height should only be about 80px since the MessageContainer should
+  take up the majority of the ChatScreen container.
+*/
 const Header = styled.div`
   position: sticky;
   background-color: white;
@@ -100,6 +109,13 @@ const Header = styled.div`
   border-bottom: 1px solid whitesmoke;
 `
 
+/*
+  For the HeaderInformation, we will have a margin-left of 15px so that the 
+  Avatar is not extremely close to the email and lastSeen.
+  
+  Additionally, we will have the flex value as 1. This will make the 
+  attachments and MoreVert icon move to the right of the Header div.
+*/
 const HeaderInformation = styled.div`
   margin-left: 15px;
   flex: 1;

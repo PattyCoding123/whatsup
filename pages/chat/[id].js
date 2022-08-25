@@ -19,6 +19,9 @@ const Chat = ({ chat, messages}) => {
     component. This is important for pre-rendering the page
     such that the user does not need to wait for the messages
     to be fetched before rendering onto the screen.
+
+    We wan to display the Sidebar on the right of the container
+    and the ChatContainer on the left.
   */
   return (
     <Container>
@@ -94,6 +97,8 @@ export async function getServerSideProps(context) {
   }
 }
 
+// For the container, make the Sidebar and ChatContainer
+// flex items.
 const Container = styled.div`
   display: flex;
 `
