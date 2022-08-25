@@ -1,16 +1,54 @@
 import styled from 'styled-components'
-import { AttachFile, MoreVert } from '@mui/icons-material'
+import { AttachFile, InsertEmoticon, Mic, MoreVert } from '@mui/icons-material'
 import { Avatar, IconButton } from '@mui/material'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useCollection } from 'react-firebase-hooks/firestore'
-import { collection, orderBy, query } from 'firebase/firestore'
+import { collection, orderBy, query, serverTimestamp, addDoc, setDoc, doc } from 'firebase/firestore'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 import { auth, db } from '../firebase'
+import Message from './Message'
 
-const ChatScreen = ({ chat, messages}) => {
+
+const ChatScreen = ({ chat, messages }) => {
   const [user] = useAuthState(auth)
+  const [input, setInput] = useState({message: ""})
   const router = useRouter()
+
+  const onChange = (event) => {
+    const { name, value } = event.target
+
+    setInput(prevInput => ({
+      ...prevInput,
+      [name]: value,
+    }))
+  }
+
+  const sendMessage = async (event) => {
+    event.preventDefault()
+
+    // Update last seen of logged-in user to most recent timestamp
+    const userRef = doc(db, "users", user.uid)
+    const userData = {
+      lastSeen: serverTimestamp(),
+    }
+    const options = { merge: true }
+    await setDoc(userRef, userData, options)
+
+    // Update chat using the router id.
+    const chatRef = collection(db, "chats", router.query.id, "messages")
+    const messageData = {
+      timestamp: serverTimestamp(),
+      message: input.message,
+      user: user.email,
+      photoURL: user.photoURL,
+    }
+    await addDoc(chatRef, messageData, options)
+
+    // Reset form fields.
+    setInput({message: ""})
+  }
 
   /*
     The following code will create a query for the messages that are under
@@ -24,14 +62,15 @@ const ChatScreen = ({ chat, messages}) => {
 
   /*
     ShowMessages will return Message components by mapping over each document in the
-    messagesSnapshot. 
+    messagesSnapshot. A message doc contains the recipient user, the message,
+    and the timestamp.
 
     It is responsible for providing the real-time information for the messages.
   */
   const showMessages = () => {
     if(messagesSnapshot) {
-      return messagesSnapshot.docs.map((message) => {
-        {/* Create message component */}
+      return messagesSnapshot.docs.map((message) => (
+        // Show the messages
         <Message 
           key={message.id}
           user={message.data().user}
@@ -40,7 +79,12 @@ const ChatScreen = ({ chat, messages}) => {
             timestamp: message.data().timestamp?.toDate().getTime()
           }}
         />
-      })
+      ))
+    } else {
+      // Return the server-side messages.
+      return JSON.parse(messages).map((message) => (
+        <Message key={message.id} user={message.user} message={message} />
+      ))
     }
   }
 
@@ -78,8 +122,27 @@ const ChatScreen = ({ chat, messages}) => {
       </Header>
 
       <MessageContainer>
+        {showMessages()}
         <EndOfMessage />
       </MessageContainer>
+
+      <InputContainer>
+        <InsertEmoticon />
+        <Input
+          value={input.message}
+          name="message"
+          onChange={onChange}
+        />
+        <button 
+          hidden 
+          disabled={!input.message} 
+          type="submit" 
+          onClick={sendMessage}
+        >
+          Send Message
+        </button>
+        <Mic />
+      </InputContainer>
     </Container>
   )
 }
@@ -132,6 +195,33 @@ const HeaderInformation = styled.div`
 
 const HeaderIcons = styled.div``
 
-const MessageContainer = styled.div``
+const MessageContainer = styled.div`
+  padding: 30px;
+  background-color: #e5ded8;
+  min-height: 90vh;
+`
 
 const EndOfMessage = styled.div``
+
+const InputContainer = styled.form`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  z-index: 100;
+`
+
+const Input = styled.input`
+  flex: 1;
+  align-items: center;
+  padding: 20px;
+  margin: 0px 15px;
+  position: sticky;
+  bottom: 0;
+  background-color: whitesmoke;
+  outline: 0;
+  border: none;
+  border-radius: 10px;
+`
