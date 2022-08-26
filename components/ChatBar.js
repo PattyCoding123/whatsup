@@ -14,10 +14,10 @@ const ChatBar = ({ id, users }) => {
   // Get the recipient email using our utility function.
   const recipientEmail = getRecipientEmail(users, user)
 
-  // The following lines of code will return an array that contains all the 
-  // documents in our users collection which match the recipientEmail.
-  const recipientColRef = query(collection(db, "users"), where("email", "==", recipientEmail))
-  const [recipientSnapshot] = useCollection(recipientColRef)
+  // The following lines of code will return an array that contains the one
+  // document in our 'users' collection which match the recipientEmail.
+  const recipientRef = query(collection(db, "users"), where("email", "==", recipientEmail))
+  const [recipientSnapshot] = useCollection(recipientRef)
   const recipient = recipientSnapshot?.docs?.[0]?.data() // Get the document from the QuerySnapshot
 
   const router = useRouter() // Obtain page router
