@@ -59,6 +59,7 @@ const ChatScreen = ({ chat, messages }) => {
     to the most recent messages.
   */
   const sendMessage = async (event) => {
+    // To avoid refreshing the page when submitting the form.
     event.preventDefault()
 
     // Update last seen of logged-in user to most recent timestamp
