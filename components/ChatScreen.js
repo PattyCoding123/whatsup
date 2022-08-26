@@ -3,14 +3,18 @@ import { AttachFile, InsertEmoticon, Mic, MoreVert } from '@mui/icons-material'
 import { Avatar, IconButton } from '@mui/material'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useCollection } from 'react-firebase-hooks/firestore'
-import { collection, orderBy, query, serverTimestamp, addDoc, setDoc, doc } from 'firebase/firestore'
+import { collection, orderBy, query, serverTimestamp, 
+  addDoc, setDoc, doc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import TimeAgo from 'react-timeago'
 
 import { auth, db } from '../firebase'
 import Message from './Message'
+import getRecipientEmail from '../lib/getRecipientEmail'
 
-
+// Chat docs and Messages docs are injected via the [id] page
+// because of the getServerSideProps.
 const ChatScreen = ({ chat, messages }) => {
   const [user] = useAuthState(auth)
   const [input, setInput] = useState({message: ""}) // Control form data using state
@@ -45,6 +49,7 @@ const ChatScreen = ({ chat, messages }) => {
     event.preventDefault()
 
     // Update last seen of logged-in user to most recent timestamp
+    // within the 'users' collection.
     const userRef = doc(db, "users", user.uid)
     const userData = {
       lastSeen: serverTimestamp(),
@@ -52,7 +57,7 @@ const ChatScreen = ({ chat, messages }) => {
     const options = { merge: true }
     await setDoc(userRef, userData, options)
 
-    // Update chat using the router id.
+    // Add a new chat document to the messages subcollection of the chat.
     const chatRef = collection(db, "chats", router.query.id, "messages")
     const messageData = {
       timestamp: serverTimestamp(),
@@ -82,6 +87,10 @@ const ChatScreen = ({ chat, messages }) => {
     and the timestamp.
 
     It is responsible for providing the real-time information for the messages.
+    
+    However, if the snapshot is not ready, we will use the messages which were injected into 
+    the ChatScreen via the [id] page from the getServerSideProps function to 
+    populate the screen with Message components.
   */
   const showMessages = () => {
     if(messagesSnapshot) {
@@ -107,6 +116,18 @@ const ChatScreen = ({ chat, messages }) => {
   }
 
   /*
+    The following 3 lines of code will return an array containing the 
+    one document that matches the query.
+
+    We need the recipient user document from the 'users' collection as 
+    we will use it to display the last seen message in
+    the header.
+  */
+  const recipientEmail = getRecipientEmail(chat.users, user)
+  const recipientRef = query(collection(db, "users"), where("email", "==", recipientEmail))
+  const [recipientSnapshot] = useCollection(recipientRef)
+  
+  /*
     The ChatScreen component is responsible for rendering the messages
     and other additional information such as the recipient's avatar and
     the last time they were online.
@@ -125,8 +146,26 @@ const ChatScreen = ({ chat, messages }) => {
         <Avatar/>
 
         <HeaderInformation>
-          <h3>Recipient Email</h3>
-          <p>Last seen ...</p>
+          <h3>{recipientEmail}</h3>
+          {/* 
+            Diaplay the recipient user's last seen 
+            status by accessing the lastSeen field and passing it's date
+            conversion into the TimeAgo component.
+
+            If they have never signed in yet, we will instead show 
+            an unavailable status message.
+
+            If the recipientSnapshot is not ready, then we will display
+            a loading status message.
+          */}
+          {recipientSnapshot ? (
+            <p>Last active: {' '}
+            {recipientSnapshot?.docs?.[0]?.data().lastSeen?.toDate() ? 
+              <TimeAgo date={recipientSnapshot?.docs?.[0]?.data().lastSeen?.toDate()}/> 
+              : "Unavailable"  
+            }
+          </p>
+          ) : (<p>Loading last active...</p>) }
         </HeaderInformation>
 
         <HeaderIcons>
