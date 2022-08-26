@@ -63,10 +63,10 @@ export async function getServerSideProps(context) {
   
   // Prep the messages on the server by making a query to all the documents
   // in the messages subcollection. Order by the most recent message.
-  const messagesQuery = query(colRef, orderBy("timestamp"))
+  const messagesQuery = query(colRef, orderBy("timestamp"));
 
   // Get a QuerySnapshot of all the messages.
-  const messagesDocs = await getDocs(messagesQuery)
+  const messagesDocs = await getDocs(messagesQuery);
 
   /* 
     Now that we have the query snapshot, we will go through each 
@@ -83,7 +83,7 @@ export async function getServerSideProps(context) {
   })).map((messages) => ({
     ...messages,
     timestamp: messages?.timestamp?.toDate().getTime(),
-  }))
+  }));
 
 
   /*
@@ -96,11 +96,11 @@ export async function getServerSideProps(context) {
 
     A chat has the following properties: users
   */
-  const chatRes = await getDoc(docRef)
+  const chatRes = await getDoc(docRef);
   const chat = {
     id: chatRes?.id,
     ...chatRes?.data(),
-  }
+  };
 
   // Return the chat data and messages data as props
   return {
@@ -108,7 +108,7 @@ export async function getServerSideProps(context) {
       messages: JSON.stringify(userMessages),
       chat: chat,
     }
-  }
+  };
 }
 
 // For the container, make the Sidebar and ChatContainer
