@@ -1,12 +1,15 @@
 import styled from 'styled-components'
 import Head from 'next/head'
+import { useAuthState } from 'react-firebase-hooks/auth'
 import { collection, doc, query, orderBy, getDoc, getDocs } from 'firebase/firestore'
 
 import Sidebar from '../../components/Sidebar'
 import ChatScreen from '../../components/ChatScreen'
-import { db } from '../../firebase'
+import { auth, db } from '../../firebase'
+import getRecipientEmail from '../../lib/getRecipientEmail'
 
 const Chat = ({ chat, messages }) => {
+  const [user] = useAuthState(auth)
   /*
     The [id] page will be rendered when the user clicks a ChatBar
     to initiate a 1-on-1 chat. The unique router value is the 
@@ -30,7 +33,7 @@ const Chat = ({ chat, messages }) => {
   return (
     <Container>
       <Head>
-        <title>Chat with {chat.users[1]}</title>
+        <title>Chat with {getRecipientEmail(chat.users, user)}</title>
       </Head>
       <Sidebar />
       <ChatContainer>
