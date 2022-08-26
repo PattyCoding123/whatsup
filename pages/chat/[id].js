@@ -74,11 +74,11 @@ export async function getServerSideProps(context) {
     from the previous object but then add in a timestamp.
   */
   const userMessages = messagesDocs.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data(),
+    id: doc?.id,
+    ...doc?.data(),
   })).map((messages) => ({
     ...messages,
-    timestamp: messages.timestamp.toDate().getTime(),
+    timestamp: messages?.timestamp?.toDate().getTime(),
   }))
 
 
@@ -94,8 +94,8 @@ export async function getServerSideProps(context) {
   */
   const chatRes = await getDoc(doc(collection(db, "chats"), context.query.id))
   const chat = {
-    id: chatRes.id,
-    ...chatRes.data(),
+    id: chatRes?.id,
+    ...chatRes?.data(),
   }
 
   // Return the chat data and messages data as props
