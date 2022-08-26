@@ -75,7 +75,14 @@ to help populate the chats with messages without them needing to load from Fireb
 <!-- GETTING STARTED -->
 ## Getting Started
 
-First, run the development server:
+First, run npm install to acquire dependencies
+```bash
+npm install
+# or
+yarn add
+```
+
+Second, run the development server:
 
 ```bash
 npm run dev
