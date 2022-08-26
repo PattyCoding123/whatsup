@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styled from 'styled-components'
 import { Button } from '@mui/material'
 import { signInWithPopup } from 'firebase/auth'
+import Image from 'next/image'
 
 import { auth, provider } from '../firebase'
 
@@ -32,7 +33,9 @@ const Login = () => {
       </Head>
 
       <LoginContainer>
-        <Logo src="http://assets.stickpng.com/images/580b57fcd9996e24bc43c543.png" alt="logo"/>
+        <Logo>
+          <Image src="/logo.png" width="200px" height="200px" alt="logo" />
+        </Logo>
         {/* Button from Material UI */}
         <Button onClick={signIn} variant="outlined">Sign in with Google</Button>
       </LoginContainer>
@@ -80,10 +83,7 @@ const LoginContainer = styled.div`
   box-shadow: 0px 4px 14px -3px rgba(0, 0, 0, 0.7);
 `
 
-// Make the image only 200px in height and width.
-// This will also help make the LoginContainer dimensions.
-const Logo = styled.img`
-  width: 200px;
-  height: 200px;
+// Logo is a span that will wrap around our Image component.
+const Logo = styled.span`
   margin-bottom: 50px;
 `

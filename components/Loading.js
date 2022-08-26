@@ -1,4 +1,6 @@
 import { ThreeDots } from 'react-loader-spinner'
+import styled from 'styled-components'
+import Image from 'next/image'
 
 const Loading = () => {
   /*
@@ -13,12 +15,9 @@ const Loading = () => {
   */
   return (
     <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: "100vh" }}>
-      <img 
-        src="http://assets.stickpng.com/images/580b57fcd9996e24bc43c543.png"
-        alt="loading image"
-        style={{ marginBottom: '10' }}
-        height={200}
-      />
+      <Logo>
+        <Image src="/logo.png" width="200px" height="200px" alt="logo" />
+      </Logo>
       <ThreeDots 
         height="80" 
         width="80" 
@@ -33,3 +32,8 @@ const Loading = () => {
   )
 }
 export default Loading
+
+// Logo is a span that will wrap around our Image component.
+const Logo = styled.span`
+  margin-bottom: 10px;
+`
