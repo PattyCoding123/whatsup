@@ -53,13 +53,14 @@ export default Chat
   users participating in the chat.
 */
 export async function getServerSideProps(context) {
-  // Access the messages subcollection from our specific chat by 
-  // creating a collection reference.
-  const ref = collection(db, "chats", context.query.id, "messages")
-
+  // Access the messages subcollection and chat collection
+  // by creating a respective collection reference and doc reference.
+  const colRef = collection(db, `chats/${context.query.id}/messages`);
+  const docRef = doc(db, `chats/${context.query.id}`);
+  
   // Prep the messages on the server by making a query to all the documents
   // in the messages subcollection. Order by the most recent message.
-  const messagesQuery = query(ref, orderBy("timestamp"))
+  const messagesQuery = query(colRef, orderBy("timestamp"))
 
   // Get a QuerySnapshot of all the messages.
   const messagesDocs = await getDocs(messagesQuery)
@@ -92,7 +93,7 @@ export async function getServerSideProps(context) {
 
     A chat has the following properties: users
   */
-  const chatRes = await getDoc(doc(collection(db, "chats"), context.query.id))
+  const chatRes = await getDoc(docRef)
   const chat = {
     id: chatRes?.id,
     ...chatRes?.data(),
