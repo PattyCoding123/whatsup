@@ -25,8 +25,6 @@
     <a href="https://github.com/PattyCoding123/whatsup"><strong>Check out the docs »</strong></a>
     <br />
     <br />
-    <a href="https://patrickducusinportfolio.dev">View Website</a>
-    ·
     <a href="https://github.com/PattyCoding123/whatsup/issues">Report Bug</a>
     ·
     <a href="https://github.com/PattyCoding123/whatsup/issues">Request Feature</a>
