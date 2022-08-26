@@ -31,6 +31,8 @@ const Sidebar = () => {
     wish to chat with. Then, if the address is valid, we will
     add a document to the database. The document is an array
     with the logged in user and the recipient.
+    - NOTE*: the document will also have a subcollection containing
+    all messages associated with the chat.
 
     Since we are using the addDoc function, we need to create
     a collection reference.

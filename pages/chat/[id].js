@@ -19,7 +19,7 @@ const Chat = ({ chat, messages }) => {
 
     The page takes advantage of server-side props. We will inject 
     the chat docs data regarding the specific 1-on-1 chat as well
-    as the messages from the subcollection into the ChatScreen 
+    as the messages from the subcollection into the 'ChatScreen'
     component. This is important for pre-rendering the page
     such that the user does not need to wait for the messages
     to be fetched before rendering onto the screen.
@@ -45,6 +45,12 @@ export default Chat
   The following function is a Server-side function that is responsible for
   loading the chat data from the database. It is called once the user clicks
   on a chat component.
+
+  We need this function to fetch the chat messages and chat users
+  so that we can pre-render the page and populate the ChatScreen
+  with the data. REMEMBER: the chat messages are in a subcollection
+  of the chat docs, while the main chat docs contain the two
+  users participating in the chat.
 */
 export async function getServerSideProps(context) {
   // Access the messages subcollection from our specific chat by 
