@@ -85,24 +85,20 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+1. Log in by pressing the "Sign in with Google" button.
+2. Click the "START A NEW CHAT" button start looking for a new chat.
+The browser will prompt you to enter an email.
+3. Once the chat begins, you can send messages to the recipient.
+4. To log out, click your profile picture on the top left of the Sidebar.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Interactive product cards
-- [x] Custom slugs for each product
-- [x] The ability to add and remove items from the cart
-- [x] Pre-rendering with Next.js (both server-side and static generation)
-- [x] Back-end content management for products
-- [x] Payment functionality
-
+- [x] Authentication (user sign in and sign out)
+- [x] Server-side rendering
+- [x] Real-time updates for activity and messages
 
 See the [open issues](https://github.com/PattyCoding123/whatsup/issues) for a full list of proposed features (and known issues).
 
