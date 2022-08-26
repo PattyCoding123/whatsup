@@ -6,7 +6,7 @@ import { useCollection } from 'react-firebase-hooks/firestore'
 import { collection, orderBy, query, serverTimestamp, 
   addDoc, setDoc, doc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import TimeAgo from 'react-timeago'
 
 import { auth, db } from '../firebase'
@@ -19,6 +19,7 @@ const ChatScreen = ({ chat, messages }) => {
   const [user] = useAuthState(auth)
   const [input, setInput] = useState({message: ""}) // Control form data using state
   const router = useRouter()
+  const endOfMessagesRef = useRef(null)
 
   /* 
     On the event where the user enters some text 
@@ -33,6 +34,15 @@ const ChatScreen = ({ chat, messages }) => {
     }))
   }
 
+  // =================================================================
+  const scrollToBottom = () => {
+    endOfMessagesRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
+
+  // =================================================================
   /*
     Send message will activate when the user hits enter for their message.
 
@@ -43,7 +53,10 @@ const ChatScreen = ({ chat, messages }) => {
     To do so, we will access the "messages" subcollection of the chat
     and add a new document with the message datas.
 
-    Finally, we will reset the input form state.
+    Third, we will reset the input form state.
+
+    Finally, call the ScrollToBottom function to get
+    to the most recent messages.
   */
   const sendMessage = async (event) => {
     event.preventDefault()
@@ -69,11 +82,16 @@ const ChatScreen = ({ chat, messages }) => {
 
     // Reset form fields.
     setInput({message: ""})
+
+    // ScrollToBottom
+    scrollToBottom()
   }
 
+  // =================================================================
   /*
     The following code will create a query for the messages that are under
     the current router.query.id (a specific 1-on-1 conversation). 
+    The docs should be sorted in ascending order.
 
     We will then get a query snapshot of all the messages 
     from the useCollection hook.
@@ -81,6 +99,7 @@ const ChatScreen = ({ chat, messages }) => {
   const messagesRef = query(collection(db, "chats", router.query.id, "messages"), orderBy("timestamp"))
   const [messagesSnapshot] = useCollection(messagesRef)
 
+  // =================================================================
   /*
     ShowMessages will return Message components by mapping over each document in the
     messagesSnapshot. A message doc contains the recipient user, the message,
@@ -115,6 +134,7 @@ const ChatScreen = ({ chat, messages }) => {
     }
   }
 
+  // =================================================================
   /*
     The following 3 lines of code will return an array containing the 
     one document that matches the query.
@@ -127,6 +147,7 @@ const ChatScreen = ({ chat, messages }) => {
   const recipientRef = query(collection(db, "users"), where("email", "==", recipientEmail))
   const [recipientSnapshot] = useCollection(recipientRef)
   
+  // =================================================================
   /*
     The ChatScreen component is responsible for rendering the messages
     and other additional information such as the recipient's avatar and
@@ -180,7 +201,7 @@ const ChatScreen = ({ chat, messages }) => {
 
       <MessageContainer>
         {showMessages()}
-        <EndOfMessage />
+        <EndOfMessage ref={endOfMessagesRef}/>
       </MessageContainer>
 
       <InputContainer>
@@ -210,7 +231,10 @@ const ChatScreen = ({ chat, messages }) => {
 }
 export default ChatScreen
 
+// =================================================================
 const Container = styled.div``
+
+// =================================================================
 /*
   For the Header of the ChatScreen, we will make the position
   sticky and top as 0 to make the elements stay at the top 
@@ -225,7 +249,7 @@ const Container = styled.div``
 const Header = styled.div`
   position: sticky;
   background-color: white;
-  z-index: 100;
+  z-index: 100; // To appear above the MessageContainer.
   top: 0;
   display: flex;
   padding: 11px;
@@ -234,6 +258,7 @@ const Header = styled.div`
   border-bottom: 1px solid whitesmoke;
 `
 
+// =================================================================
 /*
   For the HeaderInformation, we will have a margin-left of 15px so that the 
   Avatar is not extremely close to the email and lastSeen.
@@ -255,8 +280,10 @@ const HeaderInformation = styled.div`
   }
 `
 
+// =================================================================
 const HeaderIcons = styled.div``
 
+// =================================================================
 /*
   The messages container is where all the Message components 
   will be rendered. We want some padding to ensure that
@@ -271,8 +298,10 @@ const MessageContainer = styled.div`
   min-height: 90vh;
 `
 
+// =================================================================
 const EndOfMessage = styled.div``
 
+// =================================================================
 /*
   The InputContainer is where the input field will be rendered along
   with some icons. We want the items inside the form to be flex items,
@@ -291,9 +320,10 @@ const InputContainer = styled.form`
   position: sticky;
   bottom: 0;
   background-color: white;
-  z-index: 100;
+  z-index: 100; // To appear above the MessageContainer.
 `
 
+// =================================================================
 /*
   For the Input field itself, we will make the flex value equal to 1
   and we will set its align-items to be centered.
