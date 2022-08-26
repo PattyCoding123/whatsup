@@ -117,7 +117,13 @@ const Container = styled.div`
   The ChatContainer holds the ChatScreen which displays the messages
   between the users.
 
-  The Chat Container will have a flex of 1 
+  The Chat Container will have a flex of 1 to resize itself
+  in relation to the Container and the Sidebar within it.
+
+  Additionally, the ChatContainer will have an overflow of scroll
+  but will hide the scrollbar. This is incase the div cannot
+  display all the messages that have occured between the
+  two users.
 */
 const ChatContainer = styled.div`
   flex: 1;
