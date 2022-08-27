@@ -165,7 +165,7 @@ const ChatScreen = ({ chat, messages }) => {
   return (
     <Container>
       <Header>
-        <Avatar/>
+        <Avatar src={recipientSnapshot?.docs?.[0]?.data().photoURL}/>
 
         <HeaderInformation>
           <h3>{recipientEmail}</h3>
